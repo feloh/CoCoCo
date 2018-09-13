@@ -1,6 +1,6 @@
 ﻿# Mask R-CNN for Object Detection and Segmentation
 
-This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
+This is an adaption of the implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) by [Abdulla, Waleed](https://github.com/matterport/Mask_RCNN) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
 ![The Brandberg in Namibia](assets/BOOK-0824731-0025-e1523389044142.jpg)
 
@@ -10,9 +10,19 @@ The repository includes:
 * Pre-trained weights for Brandberg images
 * ParallelModel class for multi-GPU training
 
-The code is documented and designed to be easy to extend. If you use it in your research, please consider citing this repository (bibtex below). If you work on 3D vision, you might find our recently released [Matterport3D](https://matterport.com/blog/2017/09/20/announcing-matterport3d-research-dataset/) dataset useful as well.
-This dataset was created from 3D-reconstructed spaces captured by our customers who agreed to make them publicly available for academic use. You can see more examples [here](https://matterport.com/gallery/).
+## Requirements
+Python 3.4, TensorFlow 1.3, Keras 2.0.8 and other common packages listed in `requirements.txt`.
 
+## Installation
+1. Install dependencies
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+2. Clone this repository
+3. Run setup from the repository root directory
+    ```bash
+    python3 setup.py install
+    ``` 
 ## 1. Anchor sorting and filtering
 Visualizes every step of the first stage Region Proposal Network and displays positive and negative anchors along with anchor box refinement.
 ![](assets/detection_anchors.png)
@@ -26,52 +36,24 @@ Examples of generated masks. These then get scaled and placed on the image in th
 
 ![](assets/detection_masks.png)
 
-## 4.Layer activations
-Often it's useful to inspect the activations at different layers to look for signs of trouble (all zeros or random noise).
-
-![](assets/detection_activations.png)
-
-## 5. Weight Histograms
-Another useful debugging tool is to inspect the weight histograms. These are included in the inspect_weights.ipynb notebook.
-
-![](assets/detection_histograms.png)
-
-## 6. Logging to TensorBoard
+## Logging to TensorBoard
 TensorBoard is another great debugging and visualization tool. The model is configured to log losses and save weights at the end of every epoch.
 
 ![](assets/detection_tensorboard.png)
 
-## 6. Composing the different pieces into a final result
+## Composing the different pieces into a final result
 
 ![](assets/detection_final.png)
 
-
-# Training on MS COCO
-We're providing pre-trained weights for MS COCO to make it easier to start. You can
-use those weights as a starting point to train your own variation on the network.
-Training and evaluation code is in `samples/coco/coco.py`. You can import this
-module in Jupyter notebook (see the provided notebooks for examples) or you
-can run it directly from the command line as such:
-
 ```
-# Train a new model starting from pre-trained COCO weights
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=coco
+# Train a new model starting from pre-trained brandberg weights
+    python3 brandberg.py train --dataset=/path/to/brandberg/dataset --weights=/path/to/brandberg/weights
 
-# Train a new model starting from ImageNet weights
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=imagenet
+    # Resume training a model that you had trained earlier
+    python3 brandberg.py train --dataset=/path/to/brandberg/dataset --weights=last
 
-# Continue training a model that you had trained earlier
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=/path/to/weights.h5
-
-# Continue training the last model you trained. This will find
-# the last trained weights in the model directory.
-python3 samples/coco/coco.py train --dataset=/path/to/coco/ --model=last
-```
-
-You can also run the COCO evaluation code with:
-```
-# Run COCO evaluation on the last trained model
-python3 samples/coco/coco.py evaluate --dataset=/path/to/coco/ --model=last
+    # Apply color splash to an image
+    python3 brandberg.py splash --weights=/path/to/weights/file.h5 --image=<URL or path to file>
 ```
 
 The training schedule, learning rate, and other parameters should be set in `samples/coco/coco.py`.
@@ -124,16 +106,3 @@ Use this bibtex to cite this repository:
   howpublished={\url{https://github.com/matterport/Mask_RCNN}},
 }
 ```
-## Requirements
-Python 3.4, TensorFlow 1.3, Keras 2.0.8 and other common packages listed in `requirements.txt`.
-
-## Installation
-1. Install dependencies
-   ```bash
-   pip3 install -r requirements.txt
-   ```
-2. Clone this repository
-3. Run setup from the repository root directory
-    ```bash
-    python3 setup.py install
-    ``` 
